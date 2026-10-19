@@ -173,9 +173,19 @@ button:hover {
   font-size: 14px;
 }
 
-.rule-desc {
+.rule-advanced summary {
+  width: fit-content;
   color: var(--muted);
   font-size: 13px;
+  cursor: pointer;
+}
+
+.rule-advanced summary:hover {
+  color: var(--accent);
+}
+
+.rule-advanced[open] summary {
+  margin-bottom: 6px;
 }
 
 .rule-regex {

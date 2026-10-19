@@ -58,6 +58,8 @@ function renderRule(rule) {
     });
   }
   validate();
+  // Regex lives under "Advanced"; only expand it when the rule already has one.
+  row.querySelector('.rule-advanced').open = Boolean(rule.regex);
 
   const flags = row.querySelector('.rule-flags input');
   flags.checked = rule.flags;

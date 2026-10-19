@@ -47,9 +47,12 @@
       <input type="checkbox" class="rule-enabled" aria-label="Rule enabled">
       <div class="rule-body">
         <input class="rule-name" placeholder="Rule name, e.g. Annoying emojis" aria-label="Rule name">
-        <input class="rule-terms" placeholder="Emoji or words, comma-separated, e.g. 🍉, crypto" aria-label="Emoji or words to look for" spellcheck="false">
-        <label class="check rule-flags"><input type="checkbox"> Any flag emoji <span class="rule-desc">🇺🇸 🏳️‍🌈 🏴‍☠️ 🏁 and every other flag</span></label>
-        <input class="rule-regex" placeholder="Regex (optional), e.g. \bnft\b|web3" aria-label="Regular expression" spellcheck="false">
+        <input class="rule-terms" placeholder="Emoji or words, comma-separated, e.g. crypto, nft" aria-label="Emoji or words to look for" spellcheck="false">
+        <label class="check rule-flags"><input type="checkbox"> Any flag emoji</label>
+        <details class="rule-advanced">
+          <summary>Advanced</summary>
+          <input class="rule-regex" placeholder="Regex (optional), e.g. \bnft\b|web3" aria-label="Regular expression" spellcheck="false">
+        </details>
         <p class="rule-error"></p>
       </div>
       <fieldset class="rule-fields">
