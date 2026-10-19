@@ -1,0 +1,274 @@
+:root {
+  --bg: #ffffff;
+  --field: #f7f7f8;
+  --text: #0f1419;
+  --muted: #536471;
+  --border: #dfe3e6;
+  --accent: #1d6fd6;
+  --accent-soft: rgba(29, 111, 214, 0.12);
+  --danger: #c4314b;
+  --warn: #9a6700;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #181b21;
+    --field: #0f1115;
+    --text: #e7e9ea;
+    --muted: #8b98a5;
+    --border: #2c323a;
+    --accent: #5aa2ff;
+    --accent-soft: rgba(90, 162, 255, 0.16);
+    --danger: #ff6b81;
+    --warn: #e3b341;
+    color-scheme: dark;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 330px;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  color: inherit;
+}
+
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+}
+
+h2 {
+  margin: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.status:empty {
+  display: none;
+}
+
+.status[data-tone="warn"] {
+  color: var(--warn);
+}
+
+.status button {
+  flex: none;
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#rules {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.rule {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border);
+}
+
+.rule:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.rule-enabled {
+  margin-top: 7px;
+}
+
+.rule[data-off] .rule-main {
+  opacity: 0.55;
+}
+
+.rule-main input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 5px 8px;
+  background: var(--field);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.rule-main input + input {
+  margin-top: 4px;
+}
+
+.rule-main .rule-name {
+  padding: 3px 8px;
+  background: none;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.rule-main .rule-name:hover,
+.rule-main .rule-name:focus {
+  border-color: var(--border);
+}
+
+.rule-regex {
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 13px;
+}
+
+.rule-regex[hidden] {
+  display: none !important;
+}
+
+.rule-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  margin-top: 5px;
+}
+
+.rule-in {
+  margin: 0 1px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chip {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.rule-error {
+  margin: 4px 0 0;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+.rule-error:empty {
+  display: none;
+}
+
+.rule-delete {
+  padding: 3px 7px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.rule-delete:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.add-rule {
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  background: none;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-rule:hover {
+  border-color: var(--accent);
+}
+
+footer {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+footer .link {
+  color: var(--muted);
+  font-size: 12px;
+}

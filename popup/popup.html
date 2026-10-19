@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>LPV Blocker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>LPV Blocker</h1>
+    <button type="button" class="link" id="open-options">All settings</button>
+  </header>
+
+  <label class="toggle"><input type="checkbox" id="enabled"> Hide matching posts</label>
+  <label class="toggle"><input type="checkbox" id="skipFollowing"> Skip accounts I follow</label>
+  <div id="status" class="status" role="status"></div>
+
+  <h2>Rules</h2>
+  <div id="rules"></div>
+  <button type="button" class="add-rule" id="add-rule">+ New rule</button>
+
+  <footer>
+    <button type="button" class="link" id="debug">Copy debug report</button>
+  </footer>
+
+  <template id="rule-template">
+    <div class="rule">
+      <input type="checkbox" class="rule-enabled" aria-label="Rule enabled">
+      <div class="rule-main">
+        <input class="rule-name" placeholder="Name it, e.g. Annoying emojis" aria-label="Rule name">
+        <input class="rule-terms" placeholder="Emoji or words, comma-separated" aria-label="Emoji or words to look for" spellcheck="false">
+        <input class="rule-regex" placeholder="Regex" aria-label="Regular expression" spellcheck="false">
+        <p class="rule-error"></p>
+        <div class="rule-meta">
+          <button type="button" class="chip" data-flags>Any flag</button>
+          <span class="rule-in">in</span>
+          <button type="button" class="chip" data-field="name">Name</button>
+          <button type="button" class="chip" data-field="bio">Bio</button>
+          <button type="button" class="chip" data-field="location">Location</button>
+        </div>
+      </div>
+      <button type="button" class="rule-delete" aria-label="Delete rule" title="Delete rule">✕</button>
+    </div>
+  </template>
+
+  <script src="../src/shared.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

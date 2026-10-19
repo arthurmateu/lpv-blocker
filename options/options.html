@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LPV Blocker settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>LPV Blocker</h1>
+      <label class="switch"><input type="checkbox" id="enabled"> Enabled</label>
+      <span id="status" role="status"></span>
+    </header>
+
+    <section>
+      <h2>Rules</h2>
+      <p class="hint">A post is collapsed when any enabled rule matches its author's name (display name and @handle), bio or location. The post then says which rule hid it, e.g. "hidden by Annoying emojis". Text matching ignores case.</p>
+      <div id="rules"></div>
+      <div class="add">
+        <button type="button" id="add-rule">+ New rule</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Exceptions</h2>
+      <label class="check"><input type="checkbox" id="skipFollowing"> Never hide posts from accounts I follow</label>
+      <label for="allowlist" class="field-label">Always show these accounts</label>
+      <textarea id="allowlist" rows="3" placeholder="@friend, @someone_else" spellcheck="false"></textarea>
+      <p class="hint">Your own posts are never hidden.</p>
+    </section>
+
+    <section>
+      <h2>Try your rules</h2>
+      <div class="tester">
+        <input id="t-name" placeholder="Display name" aria-label="Display name">
+        <input id="t-location" placeholder="Location" aria-label="Location">
+        <textarea id="t-bio" rows="2" placeholder="Bio" aria-label="Bio"></textarea>
+      </div>
+      <p id="t-result" class="result"></p>
+    </section>
+  </main>
+
+  <template id="rule-template">
+    <div class="rule">
+      <input type="checkbox" class="rule-enabled" aria-label="Rule enabled">
+      <div class="rule-body">
+        <input class="rule-name" placeholder="Rule name, e.g. Annoying emojis" aria-label="Rule name">
+        <input class="rule-terms" placeholder="Emoji or words, comma-separated, e.g. 🍉, crypto" aria-label="Emoji or words to look for" spellcheck="false">
+        <label class="check rule-flags"><input type="checkbox"> Any flag emoji <span class="rule-desc">🇺🇸 🏳️‍🌈 🏴‍☠️ 🏁 and every other flag</span></label>
+        <input class="rule-regex" placeholder="Regex (optional), e.g. \bnft\b|web3" aria-label="Regular expression" spellcheck="false">
+        <p class="rule-error"></p>
+      </div>
+      <fieldset class="rule-fields">
+        <legend>Look in</legend>
+        <label><input type="checkbox" value="name"> Name</label>
+        <label><input type="checkbox" value="bio"> Bio</label>
+        <label><input type="checkbox" value="location"> Location</label>
+      </fieldset>
+      <button type="button" class="rule-delete" aria-label="Delete rule" title="Delete rule">✕</button>
+    </div>
+  </template>
+
+  <script src="../src/shared.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

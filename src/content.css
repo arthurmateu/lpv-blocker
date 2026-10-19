@@ -1,0 +1,44 @@
+[data-lpvb-hidden] {
+  display: none !important;
+}
+
+.lpvb-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  color: rgb(113, 118, 123);
+  font: 14px/1.35 TwitterChirp, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.lpvb-bar[data-shown] {
+  padding-bottom: 2px;
+  font-size: 13px;
+}
+
+.lpvb-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.lpvb-rules {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.lpvb-toggle {
+  flex: none;
+  padding: 4px 14px;
+  border: 1px solid rgba(113, 118, 123, 0.5);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lpvb-bar:hover .lpvb-toggle {
+  background: rgba(113, 118, 123, 0.15);
+}
