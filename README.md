@@ -54,6 +54,8 @@ Settings and the profile cache are stored locally in the browser (`storage.local
 ## Debugging
 If posts aren't being hidden, open the toolbar popup on an x.com tab and click **Copy debug report**. The report contains:
 - how many posts were found and hidden
+- every post on the page, quotes marked with `>`, and whether it's hidden or what kept it visible (you follow them, always-show list, your own post, no rule matched)
+- your rules and which fields they check
 - which profiles are known
 - how the profile lookups went
 - an outline of X's markup, with no post text included
@@ -61,5 +63,5 @@ If posts aren't being hidden, open the toolbar popup on an x.com tab and click *
 ## Limitations
 - The extension depends on X's internal data formats and page markup. If X changes them, it may stop working until those parts are updated.
 - An author whose bio is known only through a lookup is collapsed a moment after their post appears, not immediately.
-- Quoted posts are only checked separately in X's newer web app; the classic app doesn't mark quotes as separate posts.
+- In X's classic web app, a quote card doesn't link to the post it shows, so a revealed quote is remembered per quoting post rather than per quoted post.
 - Posts you reveal stay revealed until you reload the page.

@@ -3,13 +3,16 @@
 // and, when that lacks a bio, from fetching the author's profile page. Until
 // either arrives, the display name shown in the post is checked on its own.
 (() => {
-  const { api, evaluate, loadSettings, onSettingsChanged, extractUsers, userKeySample, profilePageBlobs } = globalThis.LPVB;
+  const { api, evaluate, ruleLabel, loadSettings, onSettingsChanged, extractUsers, userKeySample, profilePageBlobs } = globalThis.LPVB;
 
   const HIDDEN_ATTR = 'data-lpvb-hidden';
   const STATUS_RE = /^\/(\w{1,15})\/status\/(\d+)/;
-  // Posts are <article>s. A quoted post is usually its own <article> inside a
-  // role="link" card; a quote inside a quote is only the card.
-  const POST_SELECTOR = 'article, [role="link"][data-href*="/status/"]';
+  // Posts are <article>s. In X's newer app a quoted post is usually its own
+  // <article> inside a role="link" card; a quote inside a quote is only the
+  // card. The classic app renders every quote as a bare role="link" <div>
+  // holding the quoted author's name block.
+  const CLASSIC_QUOTE = 'article div[role="link"]:has([data-testid="User-Name"])';
+  const POST_SELECTOR = `article, [role="link"][data-href*="/status/"], ${CLASSIC_QUOTE}`;
   const PROFILE_FIELDS = ['handle', 'name', 'bio', 'location', 'following'];
   const CACHE_KEY = 'profileCache';
   const CACHE_TTL = 3 * 24 * 60 * 60 * 1000;
@@ -189,7 +192,24 @@
       }
       return { handle, name, key: `/${handle}/status/${id}`.toLowerCase() };
     }
-    return null;
+    return post.tagName === 'ARTICLE' ? null : readClassicQuote(post);
+  }
+
+  // A classic quote card links nowhere, so the author comes from its name
+  // block ("@handle") or avatar (data-testid="UserAvatar-Container-<handle>"),
+  // and the card is keyed by the post quoting it.
+  function readClassicQuote(card) {
+    const own = (sel) => [...card.querySelectorAll(sel)].find((el) => el.closest('article, div[role="link"]') === card);
+    const nameBlock = own('[data-testid="User-Name"]');
+    const avatar = own('[data-testid^="UserAvatar-Container-"]');
+    const handle =
+      [...(nameBlock?.querySelectorAll('span') || [])].map(readText).find((t) => /^@\w{1,15}$/.test(t))?.slice(1) ||
+      avatar?.getAttribute('data-testid').match(/^UserAvatar-Container-(\w{1,15})$/)?.[1];
+    if (!handle) return null;
+    const name = nameBlock?.firstElementChild && readText(nameBlock.firstElementChild);
+    const outer = card.parentElement.closest('article, div[role="link"]');
+    const parentKey = (outer && readAuthor(outer)?.key) || '';
+    return { handle, name: name && !name.startsWith('@') ? name : null, key: `${parentKey} > @${handle}`.toLowerCase() };
   }
 
   function ownHandle() {
@@ -366,19 +386,47 @@
 
   // Tag/attribute outline of a post, without its text, to see X's markup.
   function skeleton(el, depth = 0) {
-    if (depth > 14) return '…';
-    const attrs = ['data-testid', 'role', 'aria-label', 'href']
+    if (depth > 40) return '…';
+    const attrs = ['data-testid', 'role', 'aria-label', 'href', 'data-href']
       .filter((a) => el.hasAttribute(a))
       .map((a) => `${a}="${el.getAttribute(a).slice(0, 60)}"`);
     const kids = [...el.children].filter((c) => !c.classList.contains('lpvb-bar')).map((c) => skeleton(c, depth + 1));
     return `<${el.tagName.toLowerCase()}${attrs.length ? ' ' + attrs.join(' ') : ''}>${kids.join('')}`;
   }
 
+  // One line per post: its author, one ">" per level of quoting, and whether
+  // it's hidden or what kept it visible.
+  function describePost(post, author) {
+    let depth = 0;
+    for (let el = post.parentElement?.closest(POST_SELECTOR); el; el = el.parentElement?.closest(POST_SELECTOR)) {
+      if (isPost(el)) depth++;
+    }
+    const indent = '> '.repeat(depth);
+    if (!author) return `${indent}(no author found)`;
+    const key = author.handle.toLowerCase();
+    const p = profiles.get(key) || {};
+    const state = post.hasAttribute(HIDDEN_ATTR) ? 'hidden'
+      : barFor(post) ? 'revealed'
+      : !settings?.enabled ? 'shown: hiding is off'
+      : allow.has(key) ? 'shown: always-show list'
+      : key === ownHandle() ? 'shown: own post'
+      : settings.skipFollowing && p.following ? 'shown: you follow them'
+      : 'shown: no rule matched';
+    return `${indent}@${author.handle} ${state} name=${JSON.stringify(p.name ?? author.name)} bio=${p.bio == null ? '?' : 'yes'} following=${p.following ?? '?'}`;
+  }
+
+  function describeRule(r) {
+    const parts = [r.flags && 'any flag', r.terms.trim() && JSON.stringify(r.terms), r.regex && `/${r.regex}/`].filter(Boolean);
+    return `${r.enabled ? '' : '(off) '}${ruleLabel(r)}: ${parts.join(' + ') || 'nothing'} in ${r.fields.join('+')}`;
+  }
+
   function buildReport() {
     const articles = postsIn(document);
     const authors = articles.map(readAuthor);
     const known = [...profiles.values()];
-    const sample = articles.find((a, i) => authors[i]) || articles[0];
+    // A post with a quote card in it shows the most of X's markup.
+    const hasQuote = (a) => a.querySelector('div[role="link"]') || a.querySelectorAll('[data-testid="User-Name"]').length > 1;
+    const sample = articles.find((a, i) => authors[i] && hasQuote(a)) || articles.find((a, i) => authors[i]) || articles[0];
     return {
       version: api.runtime.getManifest().version,
       page: location.pathname,
@@ -389,17 +437,15 @@
       settings: settings && {
         enabled: settings.enabled,
         skipFollowing: settings.skipFollowing,
-        rules: settings.rules.filter((r) => r.enabled).map((r) => `${r.type} in ${r.fields.join('+')}`),
+        rules: settings.rules.map(describeRule),
+        allowlist: settings.allowlist.length,
       },
       me: ownHandle(),
       articles: {
         total: articles.length,
         withAuthor: authors.filter(Boolean).length,
         hidden: document.querySelectorAll(`[${HIDDEN_ATTR}]`).length,
-        authors: authors.filter(Boolean).slice(0, 6).map((a) => {
-          const p = profiles.get(a.handle.toLowerCase()) || {};
-          return `@${a.handle} name=${JSON.stringify(a.name)} bio=${p.bio == null ? '?' : 'yes'} following=${p.following ?? '?'}`;
-        }),
+        posts: articles.slice(0, 40).map((post, i) => describePost(post, authors[i])),
       },
       profiles: {
         known: known.length,
@@ -411,7 +457,7 @@
       responses: debug.responses,
       userKeys: debug.userKeys,
       lookupUserKeys: debug.lookupUserKeys,
-      sampleMarkup: sample ? skeleton(sample).slice(0, 3000) : null,
+      sampleMarkup: sample ? skeleton(sample).slice(0, 12000) : null,
     };
   }
 
