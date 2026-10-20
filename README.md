@@ -1,14 +1,12 @@
 # LPV Blocker
-
-A Chrome and Firefox extension that collapses X/Twitter posts from accounts whose **name**, **bio** or **location** match your rules. Each collapsed post is replaced by a bar saying which rule hid it: **Post by @someone hidden by Annoying emojis**. Hover over the bar to see exactly what matched ("☭ in name, 🏳️‍🌈 in bio"). Click the bar to reveal the post below it, and click again to hide it. Quoted posts are checked too, and collapse on their own inside the post that quotes them.
+A Chrome and Firefox extension that collapses X/Twitter posts from accounts whose **name**, **bio** or **location** match your rules. Each collapsed post is replaced by a bar saying which rule hid it: **Post by @someone hidden by Annoying emojis**. Hover over the bar to see exactly what matched ("🇺🇸 in name, 'crypto' in bio"). Click the bar to reveal the post below it, and click again to hide it. Quoted posts are checked too, and collapse on their own inside the post that quotes them.
 
 ## Rules
 A rule is a named set of things to look for, e.g. **Annoying emojis** or **Probable ad**. Each rule can contain any mix of:
 
 | Part | Matches |
 | --- | --- |
-| Emoji or words | Comma-separated, e.g. `☭, 👽, crypto`. Ignores case and catches stylised letters like 𝓬𝓻𝔂𝓹𝓽𝓸. |
-| Any flag emoji | Every flag: country flags 🇺🇸, 🏳️‍🌈 🏳️‍⚧️ 🏴‍☠️, 🏴󠁧󠁢󠁥󠁮󠁧󠁿 🏴󠁧󠁢󠁳󠁣󠁴󠁿, 🏁 🚩 🎌 🏳️ 🏴 |
+| Emoji or words | Comma-separated, e.g. `👽, crypto, 🇺🇸`. Ignores case and catches stylised letters like 𝓬𝓻𝔂𝓹𝓽𝓸. |
 | Regex | A JavaScript regular expression (case-insensitive). You can set it on the full settings page. |
 
 Each rule can check any combination of name (display name and @handle), bio and location. A rule without a name is labelled by what it matches. The default setup is one rule, **Flags**, which looks for any flag emoji in the name and bio.
