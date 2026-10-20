@@ -9,7 +9,11 @@ It works in **Chrome, Edge, Brave and Firefox** on a computer. It doesn't work i
 
 **[⬇ Download LPV Blocker (ZIP)](https://github.com/arthurmateu/lpv-blocker/archive/refs/heads/main.zip)**
 
-Unzip the file you downloaded. On Windows, right-click it and choose **Extract All**. On a Mac, double-click it. You now have a folder called `lpv-blocker-main`. Move it somewhere you'll keep it, such as your Documents folder. Your browser runs the extension from this folder, so it stops working if you delete the folder.
+Unzip the file you downloaded. 
+> On Windows, right-click it and choose **Extract All**.
+
+> On a Mac, double-click it. You now have a folder called `lpv-blocker-main`.
+Move it somewhere you'll keep it, such as your Documents folder. Your browser runs the extension from this folder, so it stops working if you delete the folder.
 
 Then follow the steps for your browser.
 
