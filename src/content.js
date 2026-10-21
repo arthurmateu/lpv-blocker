@@ -220,6 +220,14 @@
     return me;
   }
 
+  // The handle whose profile (any tab) you're on: you went there to look at
+  // them, so their own posts aren't hidden. Paths like /home or /explore give
+  // names no account can have.
+  function profilePageHandle() {
+    const m = /^\/(\w{1,15})(?:\/(\w+))?/.exec(location.pathname);
+    return m && m[2] !== 'status' ? m[1].toLowerCase() : null;
+  }
+
   function rulesNeedBio() {
     return settings.rules.some((r) => r.enabled && (r.fields.includes('bio') || r.fields.includes('location')));
   }
@@ -240,7 +248,7 @@
     if (!author) return;
     const key = author.handle.toLowerCase();
     let matches = [];
-    if (settings.enabled && !allow.has(key) && key !== ownHandle()) {
+    if (settings.enabled && !allow.has(key) && key !== ownHandle() && key !== profilePageHandle()) {
       const profile = { handle: author.handle, name: author.name, ...profiles.get(key) };
       if (!(settings.skipFollowing && profile.following)) matches = evaluate(profile, settings.rules);
       if (needsLookup(profile, matches.length > 0)) requestLookup(author.handle);
@@ -368,10 +376,17 @@
   Promise.all([loadSettings(), loadCache()]).then(([s]) => applySettings(s));
   onSettingsChanged(applySettings);
 
+  // Whether a post is hidden can depend on the page (see profilePageHandle),
+  // so every post is rechecked when X navigates.
+  let path = location.pathname;
   new MutationObserver((records) => {
     if (!settings) return;
     const touched = new Set(sweepBars());
     const add = (root) => postsIn(root).forEach((p) => touched.add(p));
+    if (location.pathname !== path) {
+      path = location.pathname;
+      add(document);
+    }
     for (const r of records) {
       const owner = r.target.closest?.('article');
       if (owner) add(owner);
@@ -410,6 +425,7 @@
       : !settings?.enabled ? 'shown: hiding is off'
       : allow.has(key) ? 'shown: always-show list'
       : key === ownHandle() ? 'shown: own post'
+      : key === profilePageHandle() ? 'shown: on their profile'
       : settings.skipFollowing && p.following ? 'shown: you follow them'
       : 'shown: no rule matched';
     return `${indent}@${author.handle} ${state} name=${JSON.stringify(p.name ?? author.name)} bio=${p.bio == null ? '?' : 'yes'} following=${p.following ?? '?'}`;

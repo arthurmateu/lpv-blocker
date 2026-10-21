@@ -48,6 +48,7 @@ These posts are never hidden:
 - Accounts you follow. You can turn this off.
 - Accounts you add to the "Always show these accounts" list.
 - Your own posts.
+- Someone's own posts while you're on their profile. If you go to look at someone, you see everything they've posted. Posts by other people on that profile, like reposts and quotes, are still checked.
 
 ### Changing what gets hidden
 Click the LPV Blocker icon in your toolbar. From there you can:
@@ -97,7 +98,7 @@ Settings and the profile cache are stored in `storage.local`. Regexes are JavaSc
 ### Debug report
 The report contains:
 - how many posts were found and hidden
-- every post on the page, quotes marked with `>`, and whether it's hidden or what kept it visible (you follow them, always-show list, your own post, no rule matched)
+- every post on the page, quotes marked with `>`, and whether it's hidden or what kept it visible (you follow them, always-show list, your own post, on their profile, no rule matched)
 - your rules and which fields they check
 - which profiles are known
 - how the profile lookups went
