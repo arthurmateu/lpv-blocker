@@ -57,7 +57,7 @@ Click the LPV Blocker icon in your toolbar. From there you can:
 
 A rule is a list of things to look for. To make one:
 1. Click **+ New rule** and give it a name, e.g. **Crypto**. The name appears on the bar of every post the rule hides.
-2. Type the emoji or words to look for, separated by commas, e.g. `👽, crypto, nft`. Capital letters don't matter, and fancy lettering like 𝓬𝓻𝔂𝓹𝓽𝓸 is caught too.
+2. Type the emoji or words to look for, separated by commas, e.g. `👽, crypto, nft`. Capital letters don't matter, and fancy lettering like 𝓬𝓻𝔂𝓹𝓽𝓸 is caught too. An emoji on its own matches only that emoji: 🏴 finds the black flag but not 🏴‍☠️ (the pirate flag). To match a combined emoji, type the whole thing, like `🏴‍☠️`.
 3. To match every flag emoji at once, click **Any flag**.
 4. Choose where to look: **Name**, **Bio** and/or **Location**. Name covers both the display name and the @handle.
 

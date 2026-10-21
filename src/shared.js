@@ -146,13 +146,25 @@
     return profile[field] || '';
   }
 
+  // Zero-width joiner or emoji tag character: what continues an emoji sequence.
+  const CONTINUES_EMOJI_RE = /^[\u200D\u{E0020}-\u{E007F}]/u;
+
+  // An emoji-only term finds that emoji on its own, not as the start of a longer
+  // sequence: 🏴 finds the black flag but not 🏴‍☠️ or 🏴󠁧󠁢󠁥󠁮󠁧󠁿. List the whole sequence to find that.
+  function appearsIn(hay, needle) {
+    for (let i = hay.indexOf(needle); i !== -1; i = hay.indexOf(needle, i + 1)) {
+      if (WORDY_RE.test(needle) || !CONTINUES_EMOJI_RE.test(hay.slice(i + needle.length, i + needle.length + 2))) return true;
+    }
+    return false;
+  }
+
   function ruleHits(rule, text) {
     const hits = [];
     if (rule.flags) hits.push(...(text.match(FLAG_RE) || []));
     const terms = splitTerms(rule.terms);
     if (terms.length) {
       const hay = fold(text);
-      hits.push(...terms.filter((t) => hay.includes(fold(t))));
+      hits.push(...terms.filter((t) => appearsIn(hay, fold(t))));
     }
     const match = rule.regex && compileRegex(rule.regex)?.exec(text);
     if (match && match[0]) hits.push(match[0]);
